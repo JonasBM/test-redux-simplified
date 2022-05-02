@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { GlobalConfig, LoadingIndicator } from "redux-simplified";
+import React, { useState } from "react";
 
-function App() {
+import FieldsetErros from "./ActionsFieldsets/FieldsetErros";
+import FieldsetPaginatedCRUD from "./ActionsFieldsets/FieldsetPaginatedCRUD";
+import FieldsetSimpleCRUD from "./ActionsFieldsets/FieldsetSimpleCRUD";
+import ReactJson from "react-json-view";
+import { useAppSelector } from "./store";
+
+const App = () => {
+  const store = useAppSelector((state) => {
+    return state;
+  });
+  const [response, setResponse] = useState({});
+
+  GlobalConfig.setConfig({});
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App grid-wrap">
+      <LoadingIndicator fetching={store.fetching} />
+      <FieldsetSimpleCRUD setResponse={setResponse} />
+      <FieldsetPaginatedCRUD setResponse={setResponse} />
+      <FieldsetErros setResponse={setResponse} />
+      <fieldset style={{ gridArea: "store" }}>
+        <legend>Store</legend>
+        <ReactJson name="state" src={store} />
+      </fieldset>
+      <fieldset style={{ gridArea: "response" }}>
+        <legend>Last response</legend>
+        <ReactJson name="response" src={response ? response : {}} />
+      </fieldset>
     </div>
   );
-}
+};
 
 export default App;
